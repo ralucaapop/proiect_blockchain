@@ -1,6 +1,7 @@
 package com.blockchain.backend21.Service.impl;
 
 import com.blockchain.backend21.Dto.PatientDto;
+import com.blockchain.backend21.Dto.PatientMedicalDto;
 import com.blockchain.backend21.Dto.PatientUpdateDto;
 import com.blockchain.backend21.Dto.RegisterPatientDto;
 import com.blockchain.backend21.Model.Patient;
@@ -120,6 +121,32 @@ public class PatientServiceImpl implements PatientService {
         if (dto.getPatientStatus() != null) {
             patient.setPatientStatus(PatientStatus.valueOf(dto.getPatientStatus()));
         }
+
+        patientRepository.save(patient);
+    }
+
+    @Override
+    public void updateMedicalInfo(String cnp, PatientMedicalDto dto) {
+        Patient patient = patientRepository.getPatientByCNP(cnp)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with CNP: " + cnp));
+
+        if (dto.getBloodGroupRh() != null)
+            patient.setBloodGroupRh(dto.getBloodGroupRh());
+
+        if (dto.getCurrentMedication() != null)
+            patient.setCurrentMedication(dto.getCurrentMedication());
+
+        if (dto.getAllergies() != null)
+            patient.setAllergies(dto.getAllergies());
+
+        if (dto.getChronicDiseases() != null)
+            patient.setChronicDiseases(dto.getChronicDiseases());
+
+        if (dto.getVaccines() != null)
+            patient.setVaccines(dto.getVaccines());
+
+        if (dto.getFamilyHistory() != null)
+            patient.setFamilyHistory(dto.getFamilyHistory());
 
         patientRepository.save(patient);
     }
