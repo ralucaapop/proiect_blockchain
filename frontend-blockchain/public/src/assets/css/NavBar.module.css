@@ -1,0 +1,52 @@
+.navbar {
+    display: flex;
+    padding: 1.5rem 1.5rem;
+    background-color: #e0f7fa;
+    flex-direction: column;
+    align-items: flex-end;
+    min-height: 5vh;
+}
+
+.navLinks {
+    display: flex;
+    align-items: center; /* Aliniază linkurile vertical */
+}
+
+.navLinks a, .navLinks button {
+    margin-left: 20px; /* Spațiu între linkuri */
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.logout-btn, .history, .contact{
+    background-color: transparent;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.menu-btn{
+    background-color: transparent;
+}
+
+.navLinks button {
+    border: none;
+    cursor: pointer;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.navLinks button:hover, .navLinks a:hover {
+    background-color: transparent;
+    font-weight: 600;
+}
+
+@media(max-width: 400px) {
+    .contact, .history{
+        display: none;
+    }
+}
