@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 public class PatientUpdateDto {
 
+    private String cnp;
     private String firstName;
     private String lastName;
 

@@ -25,8 +25,19 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/in/appointment_request/get_patient_requests/**").hasAuthority("PATIENT")
+                        .requestMatchers("/api/auth/login").permitAll()
+
+                        .requestMatchers("/api/auth/register").hasAuthority("DOCTOR")
+                        .requestMatchers("/api/consult/add/**").hasAuthority("DOCTOR")
+                        .requestMatchers("/api/consult/date/**").hasAuthority("DOCTOR")
+                        .requestMatchers("/api/consult/date/**").hasAuthority("DOCTOR")
+                        .requestMatchers("/api/consult/patient_date/**").permitAll()
+                        .requestMatchers("/api/consult/patient/**").permitAll()
+                        .requestMatchers("/api/patients/**").hasAuthority("DOCTOR")
+                        .requestMatchers("/api/patients/**").hasAuthority("DOCTOR")
+                        .requestMatchers("/api/patient/**").permitAll()
+                        .requestMatchers("/api/patient_medical_info/**").hasAuthority("DOCTOR")
+                        .requestMatchers("/api/patient_status/**").hasAuthority("DOCTOR")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

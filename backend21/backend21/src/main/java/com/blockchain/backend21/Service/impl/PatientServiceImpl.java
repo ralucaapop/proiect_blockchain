@@ -40,7 +40,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public AuthenticationResponse registerPatient(@RequestBody RegisterPatientDto dto) throws BadRequestException {
+    public void registerPatient(@RequestBody RegisterPatientDto dto) throws BadRequestException {
 
         if (patientRepository.getPatientByCNP(dto.getCnp()).isPresent()) {
             throw new BadRequestException("CNP already exists");
@@ -61,10 +61,7 @@ public class PatientServiceImpl implements PatientService {
         patient.setPatientStatus(PatientStatus.ACTIVE);
 
         patientRepository.save(patient);
-        var jwtToken = jwtService.generateToken(patient);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+
     }
 
     @Override

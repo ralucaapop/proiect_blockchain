@@ -30,12 +30,14 @@ public class PatientController {
     }
 
     @PostMapping("/auth/register")
-    public AuthenticationResponse register(@RequestBody RegisterPatientDto registerDto) throws BadRequestException {
-        return patientService.registerPatient(registerDto);
+    @PreAuthorize("hasAnyAuthority('DOCTOR')")
+    public ResponseEntity<ApiResponse> register(@RequestBody RegisterPatientDto registerDto) throws BadRequestException {
+        patientService.registerPatient(registerDto);
+        return ResponseEntity.ok(ApiResponse.success("Patient registered successfully", null));
     }
 
     @GetMapping("/patients")
-    //@PreAuthorize("hasAnyAuthority('MEDIC')")
+    @PreAuthorize("hasAnyAuthority('DOCTOR')")
     public ResponseEntity<ApiResponse>getAllPatients() {
         List<Patient> patients = patientService.getAllPatients();
         return ResponseEntity.ok(ApiResponse.success("Patients list", patients));
@@ -47,21 +49,23 @@ public class PatientController {
         return ResponseEntity.ok(ApiResponse.success("Patient info", patient));
     }
 
-    @PutMapping("/patient/{cnp}")
-    public ResponseEntity<ApiResponse> updatePatient(@PathVariable String cnp, @RequestBody PatientUpdateDto patientUpdateDto){
-        patientService.updatePatient(cnp, patientUpdateDto);
+    @PutMapping("/patient")
+    public ResponseEntity<ApiResponse> updatePatient(@RequestBody PatientUpdateDto patientUpdateDto){
+        patientService.updatePatient(patientUpdateDto.getCnp(), patientUpdateDto);
         return ResponseEntity.ok(ApiResponse.success("Edit done", null));
     }
 
-    @PutMapping("/patient_medical_info/{cnp}")
-    public ResponseEntity<ApiResponse> updatePatientMedicalInformation(@PathVariable String cnp, @RequestBody PatientMedicalDto patientUpdateDto){
-        patientService.updateMedicalInfo(cnp, patientUpdateDto);
+    @PutMapping("/patient_medical_info")
+    @PreAuthorize("hasAnyAuthority('DOCTOR')")
+    public ResponseEntity<ApiResponse> updatePatientMedicalInformation( @RequestBody PatientMedicalDto patientUpdateDto){
+        patientService.updateMedicalInfo(patientUpdateDto.getCnpPatient(), patientUpdateDto);
         return ResponseEntity.ok(ApiResponse.success("Medical info changed successfully", null));
     }
 
-    @PutMapping("/patient_status/{cnp}")
-    public ResponseEntity<ApiResponse> changePatientStatus(@PathVariable String cnp, @RequestBody PatientStatusDto patientStatusDto) throws BadRequestException {
-        patientService.changePatientStatus(cnp, patientStatusDto.newStatus);
+    @PutMapping("/patient_status")
+    @PreAuthorize("hasAnyAuthority('DOCTOR')")
+    public ResponseEntity<ApiResponse> changePatientStatus(@RequestBody PatientStatusDto patientStatusDto) throws BadRequestException {
+        patientService.changePatientStatus(patientStatusDto.cnpPatient, patientStatusDto.newStatus);
         return ResponseEntity.ok(ApiResponse.success("Patient status changed successfully", null));
     }
 

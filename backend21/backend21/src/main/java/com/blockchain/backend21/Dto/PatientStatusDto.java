@@ -12,4 +12,5 @@ import lombok.Setter;
 @Setter
 public class PatientStatusDto {
     public String newStatus;
+    public String cnpPatient;
 }

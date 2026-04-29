@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ConsultatiiTimePeriodDto {
-    public LocalDateTime startTime;
-    public LocalDateTime endTime;
+    private String cnp;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }

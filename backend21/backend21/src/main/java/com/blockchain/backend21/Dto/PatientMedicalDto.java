@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PatientMedicalDto {
+    private String cnpPatient;
     private String currentMedication;
     private String allergies;
     private String chronicDiseases;

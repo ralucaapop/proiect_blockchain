@@ -14,7 +14,7 @@ import java.util.List;
 public interface PatientService {
 
     List<Patient> getAllPatients();
-    AuthenticationResponse registerPatient(@RequestBody RegisterPatientDto patientDto) throws BadRequestException;
+    void registerPatient(@RequestBody RegisterPatientDto patientDto) throws BadRequestException;
     void updatePatient(String cnp, @RequestBody PatientUpdateDto patientUpdateDto);
     void updateMedicalInfo(String cnp, @RequestBody PatientMedicalDto patientMedicalDto);
     Patient getPatient(String cnp);
