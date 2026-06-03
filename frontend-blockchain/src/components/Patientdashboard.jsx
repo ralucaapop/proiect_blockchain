@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import NavBar from "./NavBar.jsx";
 import api from "../api/axios.js";
-import { parseJwt } from "../service/AuthService.js";
+import { parseJwt } from "../service/authService.jsx";
 import styles from "../assets/css/PatientDashboard.module.css";
 
 async function fetchPatientData(setPatient, setConsultations, setError, setLoading) {

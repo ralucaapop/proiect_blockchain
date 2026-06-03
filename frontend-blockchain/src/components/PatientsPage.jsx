@@ -1,6 +1,7 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import NavBar from "./NavBar.jsx";
 import styles from "../assets/css/PatientsPage.module.css";
+import axios from "axios";
 
 // ─── MOCK DATA ────────────────────────────────────────────────────────────────
 // TODO: replace with api.get("/api/patients") when backend is ready
@@ -94,15 +95,34 @@ const MOCK_CONSULTATIONS = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function PatientsPage() {
-    const [patients] = useState(MOCK_PATIENTS);
+    const [patients, setPatients] = useState([]);
     const [search, setSearch] = useState("");
     const [selected, setSelected] = useState(null);
     const [consultations, setConsultations] = useState([]);
     const [mode, setMode] = useState("idle");
     const [toast, setToast] = useState({ msg: "", type: "" });
 
-    // TODO: replace with api call when backend is ready
-    function selectPatient(cnp) {
+    const getAllPatients = async () =>{
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get(`http://localhost:8080/api/patients`,{ headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            });
+            console.log("Patients:", response.data.data);
+            setPatients(response.data.data);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
+
+
+    useEffect(() => {
+        getAllPatients()
+    }, []);
+
+    const selectPatient=(cnp)=> {
         const pat = patients.find(p => p.cnp === cnp);
         setSelected(pat);
         setConsultations(MOCK_CONSULTATIONS[cnp] || []);
@@ -238,10 +258,26 @@ function FormAddPatient({ onSuccess, onCancel }) {
     const [form, setForm] = useState({ firstName: "", lastName: "", cnp: "", password: "" });
     const ch = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-    function submit(e) {
+    async function submit(e) {
         e.preventDefault();
-        // TODO: api.post("/api/auth/register", form)
-        onSuccess();
+        try {
+            const response = await axios.post('http://localhost:8080/api/auth/register', {
+                firstName: "test",
+                lastName:"testln",
+                cnp:"testcnp",
+                password:"test_pw"
+            });
+
+            if (response.status === 200) {
+                console.log(response.data);
+                onSuccess();
+            } else {
+                alert('Eroare la înregistrare: ' + response.statusText);
+            }
+        } catch (error) {
+            console.error('Eroare de la server:', error.response ? error.response.data : error.message);
+        }
+
     }
 
     return (

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { loginUser, parseJwt } from "../service/AuthService";
+import { parseJwt } from "../service/authService.jsx";
 import { Box, Modal } from '@mui/material';
 import styles from "../assets/css/login.module.css";
+import axios from "axios";
 
 // redirectionam in functie de rol:
 //   DOCTOR  → /doctor        (DoctorBoard)
@@ -19,13 +20,15 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await loginUser(cnp, password);
-            const token = response.data.token;
-            localStorage.setItem('token', token);
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
+                cnp: cnp,
+                password: password
+            });
 
-            const decodedToken = parseJwt(token);
-            const role = decodedToken.role;
-
+            if (response.status === 200) {
+                localStorage.setItem('token', response.data.token);
+                const decodedToken = parseJwt(response.data.token);
+                const role = decodedToken.role;
             if (role === "DOCTOR") {
                 navigator('/doctor');
             } else if (role === "PATIENT") {
@@ -34,7 +37,7 @@ const Login = () => {
                 setErrorTitle("Eroare de rol");
                 setErrorText("Rolul utilizatorului nu este recunoscut.");
                 setShowErrorModal(true);
-            }
+            }}
         } catch (error) {
             if (error.response) {
                 const msg = error.response.data.message;

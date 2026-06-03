@@ -1,5 +1,5 @@
 import styles from '../assets/css/NavBar.module.css';
-import { isTokenValid } from "../service/AuthService.js";
+import { isTokenValid } from "../service/authService.jsx";
 
 const Navbar = () => {
     const isAuthenticated = localStorage.getItem('token') && isTokenValid(localStorage.getItem('token'));

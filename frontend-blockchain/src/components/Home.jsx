@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../assets/css/Home.module.css";
-import { isTokenValid, parseJwt } from "../service/AuthService.js";
+import { isTokenValid, parseJwt } from "../service/authService.jsx";
 import NavBar from "./NavBar.jsx";
 
 function Home() {
