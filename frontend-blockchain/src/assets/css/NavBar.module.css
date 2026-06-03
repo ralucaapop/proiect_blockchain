@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
+
+.navbar {
+    width: 100%;
+    padding: 22px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+}
+
+.brand {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #2a6b5e;
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+.navLinks {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navLinks a,
+.navLinks button {
+    color: #4a6b63;
+    text-decoration: none;
+    border: none;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 40px;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.01em;
+}
+
+.navLinks a:hover,
+.navLinks button:hover {
+    background: rgba(42, 107, 94, 0.1);
+    color: #1e5045;
+}
+
+.navLinks .navCta {
+    background: #2a6b5e;
+    color: #fff;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.navLinks .navCta:hover {
+    background: #1e5045;
+    color: #fff;
+}

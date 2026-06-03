@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap');
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f3ef;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.page::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(180, 210, 200, 0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.page::after {
+    content: '';
+    position: fixed;
+    bottom: -150px;
+    left: -150px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(160, 185, 210, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.card {
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.6s ease both;
+}
+
+.card-container {
+    width: 380px;
+    padding: 52px 44px 44px;
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid rgba(42, 107, 94, 0.12);
+    box-sizing: border-box;
+}
+
+.brandMark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 32px;
+}
+
+.brandDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2a6b5e;
+    animation: pulse 2.5s ease-in-out infinite;
+}
+
+.brandName {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #1a2e28;
+    letter-spacing: -0.01em;
+}
+
+.brandAccent {
+    color: #2a6b5e;
+}
+
+.helloMsg {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6b7e78;
+    text-align: center;
+    margin: 0 0 32px;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.loginForm input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(42, 107, 94, 0.2);
+    background: #faf9f7;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 400;
+    color: #1a2e28;
+    transition: border-color 0.2s, background 0.2s;
+    box-sizing: border-box;
+}
+
+.loginForm input::placeholder {
+    color: #a0b0aa;
+    font-weight: 300;
+}
+
+.loginForm input:focus {
+    border-color: #2a6b5e;
+    background: #fff;
+}
+
+.submit {
+    width: 100%;
+    padding: 15px;
+    margin-top: 8px;
+    background: #2a6b5e;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.25s, transform 0.15s;
+}
+
+.submit:hover {
+    background: #1e5045;
+    transform: translateY(-1px);
+}
+
+.submit:active {
+    transform: translateY(0);
+}
+
+/* Error Modal */
+.box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 36px 40px;
+    border-radius: 4px;
+    border: 1px solid rgba(42, 107, 94, 0.12);
+    width: 340px;
+    box-sizing: border-box;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.changeRolT {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1a2e28;
+    margin: 0 0 12px;
+}
+
+.text {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: #6b7e78;
+    margin: 0 0 24px;
+    line-height: 1.6;
+}
+
+.modalClose {
+    width: 100%;
+    padding: 12px;
+    background: #2a6b5e;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modalClose:hover {
+    background: #1e5045;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(0.8); }
+}
