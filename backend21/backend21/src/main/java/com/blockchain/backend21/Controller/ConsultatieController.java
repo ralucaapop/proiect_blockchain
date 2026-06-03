@@ -39,14 +39,14 @@ public class ConsultatieController {
         return ResponseEntity.ok(ApiResponse.success("Consultatiile pacientului", consultatii));
     }
 
-    @GetMapping("/consult/date")
+    @PostMapping("/consult/date")
     @PreAuthorize("hasAnyAuthority('DOCTOR')")
     public ResponseEntity<ApiResponse> getConsults(@RequestBody ConsultatiiTimePeriodDto consultatiiTimePeriodDto) {
         List<Consultatie> consultatii = consultatieService.getConsultatiiByPeriod(consultatiiTimePeriodDto.getStartTime(), consultatiiTimePeriodDto.getEndTime());
         return ResponseEntity.ok(ApiResponse.success("Consultatiile din anumite perioade", consultatii));
     }
 
-    @GetMapping("/consult/patient_date")
+    @PostMapping("/consult/patient_date")
     public ResponseEntity<ApiResponse>getPatientConsultsDate(@RequestBody ConsultatiiTimePeriodDto consultatiiTimePeriodDto) {
         List<Consultatie> consultatii  = consultatieService.getConsultatiiByCnpAndPeriod(consultatiiTimePeriodDto.getCnp(),  consultatiiTimePeriodDto.getStartTime(), consultatiiTimePeriodDto.getEndTime());
         return ResponseEntity.ok(ApiResponse.success("Consutatiile pacientului din numita perioda", consultatii));

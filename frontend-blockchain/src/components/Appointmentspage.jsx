@@ -1,6 +1,7 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import NavBar from "./NavBar.jsx";
 import styles from "../assets/css/AppointmentsPage.module.css";
+import axios from "axios";
 
 // ─── MOCK DATA ────────────────────────────────────────────────────────────────
 // TODO: replace with api.get("/api/consult/date", { data: { startTime, endTime } })
@@ -48,12 +49,46 @@ const MOCK_PATIENTS = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 function AppointmentsPage() {
-    const [consultations, setConsultations] = useState(MOCK_CONSULTATIONS);
-    const [patients]                        = useState(MOCK_PATIENTS);
+    const [consultations, setConsultations] = useState([]);
+    const [patients, setPatients]                        = useState([]);
     const [toast, setToast]                 = useState({ msg: "", type: "" });
     const [startDate, setStartDate]         = useState("");
     const [endDate, setEndDate]             = useState("");
     const [showModal, setShowModal]         = useState(false);
+
+    const getAllPatients = async () =>{
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get(`http://localhost:8080/api/patients`,{ headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log("Patients:", response.data.data);
+            setPatients(response.data.data);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
+    const getAllAppointments = async () =>{
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.post('http://localhost:8080/api/consult/date', {
+                startTime: "2026-04-29T07:00:00",
+                endTime: "2026-04-29T11:00:00"
+            });
+            console.log("consults:", response.data.data);
+            setConsultations(response.data.data);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
+
+    useEffect(() => {
+        getAllPatients();
+        getAllAppointments();
+    }, []);
 
     function showToast(msg, type = "success") {
         setToast({ msg, type });
@@ -64,7 +99,7 @@ function AppointmentsPage() {
     // TODO: replace with api.get("/api/consult/date", { data: { startTime, endTime } })
     function applyFilter() {
         if (!startDate || !endDate) { showToast("Selectează ambele date.", "error"); return; }
-        const filtered = MOCK_CONSULTATIONS.filter(c => {
+        const filtered = consultations.filter(c => {
             if (!c.data) return false;
             return c.data >= startDate && c.data <= endDate;
         });
@@ -74,7 +109,7 @@ function AppointmentsPage() {
     function resetFilter() {
         setStartDate("");
         setEndDate("");
-        setConsultations(MOCK_CONSULTATIONS);
+        getAllAppointments();
     }
 
     return (
