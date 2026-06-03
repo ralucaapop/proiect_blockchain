@@ -77,7 +77,7 @@ function PatientDashboard() {
                         <h1 className={styles.heroName}>
                             {patient?.firstName} {patient?.lastName}
                         </h1>
-                        <p className={styles.heroCnp}>CNP: {patient?.cnp}</p>
+                        <p className={styles.heroCnp}>CNP: {patient?.CNP}</p>
                     </div>
                     <div className={styles.heroStats}>
                         <div className={styles.stat}>

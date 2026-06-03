@@ -31,7 +31,7 @@ const Login = () => {
                 const role = decodedToken.role;
             if (role === "DOCTOR") {
                 navigator('/doctor');
-            } else if (role === "PATIENT") {
+            } else if (role === "PACIENT") {
                 navigator('/pacient/profil');
             } else {
                 setErrorTitle("Eroare de rol");

@@ -251,9 +251,7 @@ function Placeholder() {
     );
 }
 
-// ─── Formular creare pacient ──────────────────────────────────────────────────
-// TODO: replace mock submit with:
-// await api.post("/api/auth/register", form);
+
 function FormAddPatient({ onSuccess, onCancel }) {
     const [form, setForm] = useState({ firstName: "", lastName: "", cnp: "", password: "" });
     const ch = e => setForm({ ...form, [e.target.name]: e.target.value });
