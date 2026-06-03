@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap');
+
+.appWrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f3ef;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.appWrapper::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(180,210,200,0.25) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+}
+
+.appWrapper::after {
+    content: '';
+    position: fixed;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(160,185,210,0.2) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 60px 20px;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeUp 0.7s ease both;
+}
+
+.logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+
+.logoDot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background-color: #2a6b5e;
+    animation: pulse 2.5s ease-in-out infinite;
+}
+
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 500;
+    color: #1a2e28;
+    letter-spacing: -0.02em;
+    margin: 0; line-height: 1;
+}
+
+.titleAccent { color: #2a6b5e; }
+
+.subtitle {
+    margin: 12px 0 0;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: #6b7e78;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.center {
+    width: 100%;
+    max-width: 520px;
+    animation: fadeUp 0.7s 0.15s ease both;
+}
+
+.greeting {
+    font-size: 0.95rem;
+    color: #6b7e78;
+    font-weight: 300;
+    margin: 0 0 24px;
+    text-align: center;
+}
+
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    background: #fff;
+    border: 1px solid rgba(42,107,94,0.15);
+    border-radius: 6px;
+    padding: 26px 24px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    box-sizing: border-box;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(42,107,94,0.1);
+    border-color: rgba(42,107,94,0.3);
+}
+
+/* Al doilea card — transparent cu border */
+.cardOutline {
+    background: transparent;
+    border-color: rgba(42,107,94,0.22);
+}
+
+.cardOutline:hover {
+    background: rgba(42,107,94,0.03);
+}
+
+.cardIcon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: rgba(42,107,94,0.08);
+    display: flex; align-items: center; justify-content: center;
+    color: #2a6b5e;
+    flex-shrink: 0;
+}
+
+.cardContent { flex: 1; }
+
+.cardTitle {
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #1a2e28;
+    margin: 0 0 4px;
+}
+
+.cardDesc {
+    font-size: 0.85rem;
+    color: #8a9e98;
+    font-weight: 300;
+    margin: 0;
+}
+
+.cardArrow {
+    font-size: 1.1rem;
+    color: #2a6b5e;
+    opacity: 0.5;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.card:hover .cardArrow {
+    transform: translateX(5px);
+    opacity: 1;
+}
+
+.contact {
+    padding: 32px 20px;
+    color: #a0b0aa;
+    font-size: 0.78rem;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    text-align: center;
+}
+
+.contact a { color: inherit; text-decoration: none; transition: color 0.2s; }
+.contact a:hover { color: #2a6b5e; }
+.divider { margin: 0 12px; opacity: 0.4; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.85); }
+}
