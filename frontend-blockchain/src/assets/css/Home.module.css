@@ -40,18 +40,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex: 1;
     width: 100%;
     position: relative;
     z-index: 1;
-    padding: 60px 20px;
+    padding: 80px 20px 20px;
     box-sizing: border-box;
 }
 
 .header {
     text-align: center;
-    margin-bottom: 64px;
+    margin-bottom: 48px;
     animation: fadeUp 0.7s ease both;
 }
 
@@ -100,8 +100,8 @@
 }
 
 .welcomeBlock {
-    margin-bottom: 32px;
-    padding-bottom: 28px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
     border-bottom: 1px solid rgba(42, 107, 94, 0.15);
 }
 
@@ -149,10 +149,6 @@
     transform: translateY(-1px);
 }
 
-.btnPrimary:active {
-    transform: translateY(0);
-}
-
 .btnSecondary {
     display: flex;
     align-items: center;
@@ -191,45 +187,34 @@
 
 .unauthMessage {
     text-align: center;
-    padding: 32px 0;
+    padding: 16px 0;
 }
 
 .unauthMessage p {
     font-size: 0.95rem;
     color: #8a9e98;
-    margin: 0 0 20px;
+    margin: 0 0 16px;
     font-weight: 300;
 }
 
-.btnLogin {
+.tagline {
     display: inline-block;
-    background: #1a2e28;
-    color: #f5f3ef;
-    padding: 14px 36px;
+    border: 1.5px solid #1a2e28;
     border-radius: 4px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
+    padding: 14px 28px;
+    font-size: 0.95rem;
     font-weight: 500;
-    text-decoration: none;
-    letter-spacing: 0.04em;
-    transition: background 0.25s;
-    border: none;
-    cursor: pointer;
-}
-
-.btnLogin:hover {
-    background: #2a6b5e;
+    color: #1a2e28;
+    letter-spacing: 0.02em;
 }
 
 .contact {
-    padding: 32px 20px;
+    margin-top: 24px;
     color: #a0b0aa;
     font-size: 0.78rem;
     font-weight: 300;
     letter-spacing: 0.04em;
     text-align: center;
-    position: relative;
-    z-index: 1;
 }
 
 .contact a {

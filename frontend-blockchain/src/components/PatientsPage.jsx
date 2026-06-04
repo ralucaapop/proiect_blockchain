@@ -3,23 +3,17 @@ import NavBar from "./NavBar.jsx";
 import api from "../api/axios.js";
 import styles from "../assets/css/PatientsPage.module.css";
 
-// Ruta: /doctor/pacienti
-// Layout split: stanga = lista, dreapta = fisa pacient selectat sau formular
-
 function PatientsPage() {
-    const [patients, setPatients]         = useState([]);
-    const [search, setSearch]             = useState("");
-    const [selected, setSelected]         = useState(null);
-    const [consultations, setConsultations] = useState([]);
-    const [mode, setMode]                 = useState("idle");
-    const [toast, setToast]               = useState({ msg: "", type: "" });
+    const [patients, setPatients]               = useState([]);
+    const [search, setSearch]                   = useState("");
+    const [selected, setSelected]               = useState(null);
+    const [consultations, setConsultations]     = useState([]);
+    const [mode, setMode]                       = useState("idle");
+    const [toast, setToast]                     = useState({ msg: "", type: "" });
     const [loadingPatients, setLoadingPatients] = useState(true);
-    const [loadingFile, setLoadingFile]   = useState(false);
+    const [loadingFile, setLoadingFile]         = useState(false);
 
-    // Incarca lista de pacienti la mount
-    useEffect(() => {
-        loadPatients();
-    }, []);
+    useEffect(() => { loadPatients(); }, []);
 
     async function loadPatients() {
         setLoadingPatients(true);
@@ -33,8 +27,6 @@ function PatientsPage() {
         }
     }
 
-    // La click pe un pacient din lista:
-    // incarca datele complete + consultatiile lui in paralel
     async function selectPatient(cnp) {
         setLoadingFile(true);
         setMode("view");
@@ -71,49 +63,35 @@ function PatientsPage() {
         <div className={styles.appWrapper}>
             <NavBar />
             <div className={styles.layout}>
-
-                {/* ════ SIDEBAR STANGA ════ */}
                 <aside className={styles.sidebar}>
                     <div className={styles.sidebarTop}>
                         <h2 className={styles.sidebarTitle}>Pacienți</h2>
-                        <button
-                            className={styles.btnAdd}
-                            onClick={() => { setMode("addPatient"); setSelected(null); }}
-                        >
+                        <button className={styles.btnAdd}
+                                onClick={() => { setMode("addPatient"); setSelected(null); }}>
                             + Pacient nou
                         </button>
                     </div>
-
                     <div className={styles.searchBox}>
-                        <input
-                            className={styles.search}
-                            placeholder="Caută după nume sau CNP…"
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                        />
+                        <input className={styles.search}
+                               placeholder="Caută după nume sau CNP…"
+                               value={search}
+                               onChange={e => setSearch(e.target.value)} />
                     </div>
-
                     <ul className={styles.list}>
-                        {loadingPatients && (
-                            <li className={styles.listEmpty}>Se încarcă…</li>
-                        )}
+                        {loadingPatients && <li className={styles.listEmpty}>Se încarcă…</li>}
                         {!loadingPatients && filtered.length === 0 && (
                             <li className={styles.listEmpty}>Niciun pacient găsit.</li>
                         )}
                         {!loadingPatients && filtered.map(p => (
-                            <li
-                                key={p.CNP}
+                            <li key={p.CNP}
                                 className={`${styles.listItem} ${selected?.CNP === p.CNP && mode === "view" ? styles.listItemActive : ""}`}
-                                onClick={() => selectPatient(p.CNP)}
-                            >
+                                onClick={() => selectPatient(p.CNP)}>
                                 <div className={styles.avatar}>
                                     {(p.firstName?.[0] || "").toUpperCase()}
                                     {(p.lastName?.[0]  || "").toUpperCase()}
                                 </div>
                                 <div className={styles.listMeta}>
-                                    <span className={styles.listName}>
-                                        {p.firstName} {p.lastName}
-                                    </span>
+                                    <span className={styles.listName}>{p.firstName} {p.lastName}</span>
                                     <span className={styles.listCnp}>{p.CNP}</span>
                                 </div>
                                 <span className={`${styles.badge} ${p.patientStatus === "TRANSFERAT" ? styles.badgeGray : styles.badgeGreen}`}>
@@ -124,60 +102,42 @@ function PatientsPage() {
                     </ul>
                 </aside>
 
-                {/* ════ PANEL DREAPTA ════ */}
                 <main className={styles.panel}>
                     {toast.msg && (
                         <div className={toast.type === "error" ? styles.toastError : styles.toastSuccess}>
                             {toast.msg}
                         </div>
                     )}
-
                     {mode === "idle" && <Placeholder />}
-
                     {mode === "addPatient" && (
                         <FormAddPatient
-                            onSuccess={() => {
-                                loadPatients();
-                                setMode("idle");
-                                showToast("Pacient creat cu succes!");
-                            }}
-                            onCancel={() => setMode("idle")}
-                        />
+                            onSuccess={() => { loadPatients(); setMode("idle"); showToast("Pacient creat cu succes!"); }}
+                            onCancel={() => setMode("idle")} />
                     )}
-
                     {mode === "view" && loadingFile && (
                         <div className={styles.loadingFile}>Se încarcă fișa…</div>
                     )}
-
                     {mode === "view" && !loadingFile && selected && (
                         <PatientFile
                             patient={selected}
                             consultations={consultations}
                             onAddConsult={() => setMode("addConsult")}
                             onRefresh={() => selectPatient(selected.CNP)}
-                            showToast={showToast}
-                        />
+                            showToast={showToast} />
                     )}
-
                     {mode === "addConsult" && selected && (
                         <FormAddConsult
                             cnp={selected.CNP}
                             name={`${selected.firstName} ${selected.lastName}`}
-                            onSuccess={() => {
-                                selectPatient(selected.CNP);
-                                showToast("Consultație adăugată cu succes!");
-                            }}
-                            onCancel={() => setMode("view")}
-                        />
+                            onSuccess={() => { selectPatient(selected.CNP); showToast("Consultație adăugată cu succes!"); }}
+                            onCancel={() => setMode("view")} />
                     )}
                 </main>
-
             </div>
         </div>
     );
 }
 
-// ─── Placeholder ──────────────────────────────────────────────────────────────
 function Placeholder() {
     return (
         <div className={styles.placeholder}>
@@ -192,19 +152,15 @@ function Placeholder() {
     );
 }
 
-// ─── Formular creare pacient ──────────────────────────────────────────────────
-// POST /api/auth/register → { firstName, lastName, cnp, password }
 function FormAddPatient({ onSuccess, onCancel }) {
-    const [form, setForm]     = useState({ firstName: "", lastName: "", cnp: "", password: "" });
+    const [form, setForm]       = useState({ firstName: "", lastName: "", cnp: "", password: "" });
     const [loading, setLoading] = useState(false);
-    const [err, setErr]       = useState("");
-
+    const [err, setErr]         = useState("");
     const ch = e => setForm({ ...form, [e.target.name]: e.target.value });
 
     async function submit(e) {
         e.preventDefault();
-        setLoading(true);
-        setErr("");
+        setLoading(true); setErr("");
         try {
             await api.post("/api/auth/register", form);
             onSuccess();
@@ -218,9 +174,7 @@ function FormAddPatient({ onSuccess, onCancel }) {
     return (
         <div className={styles.formPanel}>
             <h2 className={styles.panelTitle}>Pacient nou</h2>
-            <p className={styles.panelSub}>
-                Completează datele minime. Fișa completă se editează ulterior.
-            </p>
+            <p className={styles.panelSub}>Completează datele minime. Fișa completă se editează ulterior.</p>
             {err && <div className={styles.toastError}>{err}</div>}
             <form onSubmit={submit} className={styles.form}>
                 <div className={styles.row2}>
@@ -233,61 +187,43 @@ function FormAddPatient({ onSuccess, onCancel }) {
                     <button type="submit" className={styles.btnPrimary} disabled={loading}>
                         {loading ? "Se creează…" : "Creează cont"}
                     </button>
-                    <button type="button" className={styles.btnSecondary} onClick={onCancel}>
-                        Anulează
-                    </button>
+                    <button type="button" className={styles.btnSecondary} onClick={onCancel}>Anulează</button>
                 </div>
             </form>
         </div>
     );
 }
 
-// ─── Fisa completa a pacientului ──────────────────────────────────────────────
 function PatientFile({ patient, consultations, onAddConsult, onRefresh, showToast }) {
     return (
         <div className={styles.filePanel}>
-
-            {/* Header */}
             <div className={styles.fileHeader}>
                 <div className={styles.fileAvatar}>
                     {(patient.firstName?.[0] || "").toUpperCase()}
                     {(patient.lastName?.[0]  || "").toUpperCase()}
                 </div>
                 <div className={styles.fileHeaderInfo}>
-                    <h2 className={styles.fileName}>
-                        {patient.firstName} {patient.lastName}
-                    </h2>
+                    <h2 className={styles.fileName}>{patient.firstName} {patient.lastName}</h2>
                     <p className={styles.fileCnp}>
                         CNP: {patient.CNP}
-                        <span
-                            className={`${styles.badge} ${patient.patientStatus === "TRANSFERAT" ? styles.badgeGray : styles.badgeGreen}`}
-                            style={{ marginLeft: 10 }}
-                        >
+                        <span className={`${styles.badge} ${patient.patientStatus === "TRANSFERAT" ? styles.badgeGray : styles.badgeGreen}`}
+                              style={{ marginLeft: 10 }}>
                             {patient.patientStatus === "TRANSFERAT" ? "Transferat" : "Activ"}
                         </span>
                     </p>
                 </div>
                 {patient.patientStatus !== "TRANSFERAT" && (
-                    <BtnTransfer
-                        cnp={patient.CNP}
-                        onDone={onRefresh}
-                        showToast={showToast}
-                    />
+                    <BtnTransfer cnp={patient.CNP} onDone={onRefresh} showToast={showToast} />
                 )}
             </div>
-
             <SectPersonal patient={patient} onSaved={onRefresh} showToast={showToast} />
             <SectMedical  patient={patient} onSaved={onRefresh} showToast={showToast} />
-
-            {/* Consultatii */}
             <div className={styles.section}>
                 <div className={styles.sectHead}>
                     <h3 className={styles.sectTitle}>Consultații</h3>
-                    <button
-                        className={styles.btnPrimary}
-                        style={{ padding: "7px 14px", fontSize: "0.82rem" }}
-                        onClick={onAddConsult}
-                    >
+                    <button className={styles.btnPrimary}
+                            style={{ padding: "7px 14px", fontSize: "0.82rem" }}
+                            onClick={onAddConsult}>
                         + Consultație nouă
                     </button>
                 </div>
@@ -300,8 +236,6 @@ function PatientFile({ patient, consultations, onAddConsult, onRefresh, showToas
     );
 }
 
-// ─── Sectiunea date personale cu editare ─────────────────────────────────────
-// PUT /api/patient → { cnp, firstName, lastName, dateOfBirth, phone, email, address }
 function SectPersonal({ patient, onSaved, showToast }) {
     const [edit, setEdit] = useState(false);
     const [form, setForm] = useState({
@@ -313,29 +247,21 @@ function SectPersonal({ patient, onSaved, showToast }) {
         email:       patient.email       || "",
         address:     patient.address     || "",
     });
-
     const ch = e => setForm({ ...form, [e.target.name]: e.target.value });
 
     async function save() {
         try {
             await api.put("/api/patient", form);
             showToast("Date personale salvate!");
-            setEdit(false);
-            onSaved();
-        } catch {
-            showToast("Eroare la salvare.", "error");
-        }
+            setEdit(false); onSaved();
+        } catch { showToast("Eroare la salvare.", "error"); }
     }
 
     return (
         <div className={styles.section}>
             <div className={styles.sectHead}>
                 <h3 className={styles.sectTitle}>Date personale</h3>
-                {!edit && (
-                    <button className={styles.btnEdit} onClick={() => setEdit(true)}>
-                        ✎ Editează
-                    </button>
-                )}
+                {!edit && <button className={styles.btnEdit} onClick={() => setEdit(true)}>✎ Editează</button>}
             </div>
             {!edit ? (
                 <div className={styles.infoGrid}>
@@ -366,15 +292,14 @@ function SectPersonal({ patient, onSaved, showToast }) {
     );
 }
 
-// ─── Sectiunea date medicale cu editare ───────────────────────────────────────
-// PUT /api/patient_medical_info → { cnpPatient, bloodGroupRh, allergies,
-//                                   chronicDiseases, currentMedication,
-//                                   vaccines, familyHistory, patientStatus }
+// FIX 1: adaugat height si weight in formular
 function SectMedical({ patient, onSaved, showToast }) {
     const [edit, setEdit] = useState(false);
     const [form, setForm] = useState({
         cnpPatient:        patient.CNP,
         bloodGroupRh:      patient.bloodGroupRh      || "",
+        height:            patient.height             || "",
+        weight:            patient.weight             || "",
         allergies:         patient.allergies          || "",
         chronicDiseases:   patient.chronicDiseases    || "",
         currentMedication: patient.currentMedication  || "",
@@ -382,29 +307,21 @@ function SectMedical({ patient, onSaved, showToast }) {
         familyHistory:     patient.familyHistory       || "",
         patientStatus:     patient.patientStatus       || "ACTIV",
     });
-
     const ch = e => setForm({ ...form, [e.target.name]: e.target.value });
 
     async function save() {
         try {
             await api.put("/api/patient_medical_info", form);
             showToast("Date medicale salvate!");
-            setEdit(false);
-            onSaved();
-        } catch {
-            showToast("Eroare la salvare.", "error");
-        }
+            setEdit(false); onSaved();
+        } catch { showToast("Eroare la salvare.", "error"); }
     }
 
     return (
         <div className={styles.section}>
             <div className={styles.sectHead}>
                 <h3 className={styles.sectTitle}>Date medicale</h3>
-                {!edit && (
-                    <button className={styles.btnEdit} onClick={() => setEdit(true)}>
-                        ✎ Editează
-                    </button>
-                )}
+                {!edit && <button className={styles.btnEdit} onClick={() => setEdit(true)}>✎ Editează</button>}
             </div>
             {!edit ? (
                 <div className={styles.infoGrid}>
@@ -418,7 +335,9 @@ function SectMedical({ patient, onSaved, showToast }) {
                 </div>
             ) : (
                 <div className={styles.form}>
-                    <Field    label="Grupă sânge + RH"  name="bloodGroupRh"      value={form.bloodGroupRh}      onChange={ch} placeholder="ex: A+" />
+                    <Field label="Grupă sânge + RH" name="bloodGroupRh" value={form.bloodGroupRh} onChange={ch} placeholder="ex: A+" />
+                    <Field label="Înălțime (cm)" name="height" value={form.height} onChange={ch} type="number" placeholder="170" />
+                    <Field label="Greutate (kg)" name="weight" value={form.weight} onChange={ch} type="number" placeholder="70" />
                     <Textarea label="Alergii"            name="allergies"          value={form.allergies}          onChange={ch} />
                     <Textarea label="Boli cronice"       name="chronicDiseases"    value={form.chronicDiseases}    onChange={ch} />
                     <Textarea label="Medicație curentă"  name="currentMedication"  value={form.currentMedication}  onChange={ch} />
@@ -434,8 +353,6 @@ function SectMedical({ patient, onSaved, showToast }) {
     );
 }
 
-// ─── Buton transfer pacient ───────────────────────────────────────────────────
-// PUT /api/patient_status → { cnpPatient, newStatus: "TRANSFERAT" }
 function BtnTransfer({ cnp, onDone, showToast }) {
     async function transfer() {
         if (!window.confirm("Marchezi pacientul ca TRANSFERAT. Ești sigur?")) return;
@@ -443,9 +360,7 @@ function BtnTransfer({ cnp, onDone, showToast }) {
             await api.put("/api/patient_status", { cnpPatient: cnp, newStatus: "TRANSFERAT" });
             showToast("Pacient marcat ca transferat.");
             onDone();
-        } catch {
-            showToast("Eroare la schimbarea statusului.", "error");
-        }
+        } catch { showToast("Eroare la schimbarea statusului.", "error"); }
     }
     return (
         <button className={styles.btnDanger} onClick={transfer} style={{ marginLeft: "auto" }}>
@@ -454,12 +369,16 @@ function BtnTransfer({ cnp, onDone, showToast }) {
     );
 }
 
-// ─── Card consultatie (read-only) ─────────────────────────────────────────────
+// FIX 2: data afisata fara ora — taiem dupa "T"
 function ConsultCard({ c }) {
+    const data = c.dataConsultatie
+        ? c.dataConsultatie.split("T")[0]
+        : "—";
+
     return (
         <div className={styles.consultCard}>
             <div className={styles.consultTop}>
-                <span className={styles.consultDate}>{c.dataConsultatie ?? c.dataConsultatie ?? "—"}</span>
+                <span className={styles.consultDate}>{data}</span>
                 <span className={styles.consultDiag}>{c.diagnostic ?? "—"}</span>
             </div>
             <div className={styles.consultGrid}>
@@ -482,19 +401,15 @@ function ConsultCard({ c }) {
     );
 }
 
-// ─── Formular consultatie noua ────────────────────────────────────────────────
-// POST /api/consult/add → { cnp, simptome, diagnostic, tratament, alteDetalii }
 function FormAddConsult({ cnp, name, onSuccess, onCancel }) {
     const [form, setForm]       = useState({ cnp, simptome: "", diagnostic: "", tratament: "", alteDetalii: "" });
     const [loading, setLoading] = useState(false);
     const [err, setErr]         = useState("");
-
     const ch = e => setForm({ ...form, [e.target.name]: e.target.value });
 
     async function submit(e) {
         e.preventDefault();
-        setLoading(true);
-        setErr("");
+        setLoading(true); setErr("");
         try {
             await api.post("/api/consult/add", form);
             onSuccess();
@@ -519,16 +434,13 @@ function FormAddConsult({ cnp, name, onSuccess, onCancel }) {
                     <button type="submit"  className={styles.btnPrimary} disabled={loading}>
                         {loading ? "Se salvează…" : "Salvează consultație"}
                     </button>
-                    <button type="button" className={styles.btnSecondary} onClick={onCancel}>
-                        Anulează
-                    </button>
+                    <button type="button" className={styles.btnSecondary} onClick={onCancel}>Anulează</button>
                 </div>
             </form>
         </div>
     );
 }
 
-// ─── Micro-componente ─────────────────────────────────────────────────────────
 function Info({ label, value, span }) {
     return (
         <div className={styles.infoItem} style={span ? { gridColumn: `span ${span}` } : {}}>
@@ -542,11 +454,9 @@ function Field({ label, name, value, onChange, type = "text", placeholder, requi
     return (
         <div className={styles.field}>
             <label>{label}</label>
-            <input
-                name={name} value={value} onChange={onChange}
-                type={type} placeholder={placeholder}
-                required={required} maxLength={maxLength}
-            />
+            <input name={name} value={value} onChange={onChange}
+                   type={type} placeholder={placeholder}
+                   required={required} maxLength={maxLength} />
         </div>
     );
 }

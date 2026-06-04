@@ -397,6 +397,12 @@
 }
 
 .row2 {
+
+    .row3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+    }
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
@@ -506,4 +512,14 @@
     .sidebar { width: 100%; height: 240px; }
     .panel { padding: 20px 14px; }
     .infoGrid, .consultGrid, .row2 { grid-template-columns: 1fr; }
+
+    .row3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+    }
+}
+.field input,
+.field textarea {
+    resize: none;
 }

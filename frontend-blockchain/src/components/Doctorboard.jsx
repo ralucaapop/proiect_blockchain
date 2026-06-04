@@ -19,7 +19,7 @@ function DoctorBoard() {
                         <span className={styles.logoDot}></span>
                     </div>
                     <h1 className={styles.title}>
-                        Dent<span className={styles.titleAccent}>help</span>
+                        Smart<span className={styles.titleAccent}>Care</span>
                     </h1>
                     <p className={styles.subtitle}>Panou medic</p>
                 </header>

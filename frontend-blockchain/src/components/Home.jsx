@@ -1,7 +1,6 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../assets/css/Home.module.css";
-import { isTokenValid, parseJwt } from "../service/authService.jsx";
+import { isTokenValid, parseJwt } from "../service/AuthService";
 import NavBar from "./NavBar.jsx";
 
 function Home() {
@@ -9,31 +8,17 @@ function Home() {
     const token = localStorage.getItem("token");
     const role = token && isTokenValid(token) ? parseJwt(token).role : null;
 
-    // Daca utilizatorul e deja logat, il redirectionam automat
-    // Medicul → DoctorBoard
-    // Pacientul → PatientDashboard (datele lui)
-    useEffect(() => {
-        if (role === "DOCTOR") {
-            navigate("/doctor");
-        } else if (role === "PATIENT") {
-            navigate("/pacient/profil");
-        }
-    }, [role, navigate]);
-
-    // Cat timp redirectionam nu afisam nimic
-    if (role) return null;
-
-    // Doar utilizatorii nelogati vad pagina de Home
     return (
         <div className={styles.appWrapper}>
             <NavBar />
+
             <div className={styles.page}>
                 <header className={styles.header}>
                     <div className={styles.logo}>
                         <span className={styles.logoDot}></span>
                     </div>
                     <h1 className={styles.title}>
-                        Dent<span className={styles.titleAccent}>help</span>
+                        Smart<span className={styles.titleAccent}>Care</span>
                     </h1>
                     <p className={styles.subtitle}>Gestionare medicală simplificată</p>
                 </header>
@@ -41,15 +26,47 @@ function Home() {
                 <main className={styles.center}>
                     <div className={styles.welcomeBlock}>
                         <h3>Bine ai venit</h3>
-                        <p>Autentifică-te pentru a accesa platforma.</p>
+                        <p>Accesează rapid instrumentele tale de lucru.</p>
                     </div>
+
                     <div className={styles.actions}>
-                        <div className={styles.unauthMessage}>
-                            <p>Autentifică-te pentru a începe.</p>
-                            <a href="/login" className={styles.btnLogin}>
-                                Autentificare
-                            </a>
-                        </div>
+                        {role === "PATIENT" && (
+                            <button
+                                className={styles.btnPrimary}
+                                onClick={() => navigate("/pacient/profil")}
+                            >
+                                <span>Profilul meu</span>
+                                <span className={styles.btnArrow}>→</span>
+                            </button>
+                        )}
+
+                        {role === "DOCTOR" && (
+                            <>
+                                <button
+                                    className={styles.btnPrimary}
+                                    onClick={() => navigate("/doctor/consultatii")}
+                                >
+                                    <span>Vezi Consultații</span>
+                                    <span className={styles.btnArrow}>→</span>
+                                </button>
+                                <button
+                                    className={styles.btnSecondary}
+                                    onClick={() => navigate("/doctor/pacienti")}
+                                >
+                                    <span>Lista Pacienți</span>
+                                    <span className={styles.btnArrow}>→</span>
+                                </button>
+                            </>
+                        )}
+
+                        {!role && (
+                            <div className={styles.unauthMessage}>
+                                <p>Platformă dedicată gestionării pacienților și consultațiilor medicale.</p>
+                                <div className={styles.tagline}>
+                                    Sănătatea ta, prioritatea noastră!
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </main>
 

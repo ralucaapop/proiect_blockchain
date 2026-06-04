@@ -1,11 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import styles from "../assets/css/Contact.module.css";
-import NavBar from "./NavBar.jsx";
 
 function Contact() {
+    const navigate = useNavigate();
+
     return (
         <div className={styles.appWrapper}>
-            <NavBar />
             <div className={styles.page} id="contact">
+
+                <button className={styles.backBtn} onClick={() => navigate("/")}>
+                    ← Înapoi
+                </button>
+
                 <header className={styles.header}>
                     <div className={styles.logoDot}></div>
                     <h1 className={styles.title}>Contact</h1>
@@ -23,7 +29,6 @@ function Contact() {
                                 </a>
                             </div>
                         </div>
-
                         <div className={styles.infoCard}>
                             <span className={styles.infoIcon}>☎</span>
                             <div>
@@ -33,7 +38,6 @@ function Contact() {
                                 </a>
                             </div>
                         </div>
-
                         <div className={styles.infoCard}>
                             <span className={styles.infoIcon}>◎</span>
                             <div>
@@ -41,7 +45,6 @@ function Contact() {
                                 <p className={styles.infoValue}>Str. Exemplu nr. 1, București</p>
                             </div>
                         </div>
-
                         <div className={styles.infoCard}>
                             <span className={styles.infoIcon}>◷</span>
                             <div>

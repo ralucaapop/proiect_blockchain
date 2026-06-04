@@ -35,6 +35,30 @@
     pointer-events: none;
 }
 
+/* Buton înapoi */
+.backBtn {
+    position: absolute;
+    top: 24px;
+    left: 32px;
+    background: transparent;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #2a6b5e;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+    z-index: 2;
+}
+
+.backBtn:hover {
+    color: #1e5045;
+}
+
 .card {
     position: relative;
     z-index: 1;
@@ -146,7 +170,6 @@
     transform: translateY(0);
 }
 
-/* Error Modal */
 .box {
     position: absolute;
     top: 50%;
@@ -197,17 +220,11 @@
 }
 
 @keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(24px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.45; transform: scale(0.8); }
+    50%       { opacity: 0.45; transform: scale(0.8); }
 }

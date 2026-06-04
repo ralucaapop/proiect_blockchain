@@ -5,10 +5,6 @@ import { Box, Modal } from '@mui/material';
 import styles from "../assets/css/login.module.css";
 import axios from "axios";
 
-// redirectionam in functie de rol:
-//   DOCTOR  → /doctor        (DoctorBoard)
-//   PATIENT → /pacient/profil (PatientDashboard)
-
 const Login = () => {
     const [cnp, setCNP] = useState('');
     const [password, setPassword] = useState('');
@@ -29,15 +25,16 @@ const Login = () => {
                 localStorage.setItem('token', response.data.token);
                 const decodedToken = parseJwt(response.data.token);
                 const role = decodedToken.role;
-            if (role === "DOCTOR") {
-                navigator('/doctor');
-            } else if (role === "PACIENT") {
-                navigator('/pacient/profil');
-            } else {
-                setErrorTitle("Eroare de rol");
-                setErrorText("Rolul utilizatorului nu este recunoscut.");
-                setShowErrorModal(true);
-            }}
+                if (role === "DOCTOR") {
+                    navigator('/doctor');
+                } else if (role === "PATIENT") {
+                    navigator('/pacient/profil');
+                } else {
+                    setErrorTitle("Eroare de rol");
+                    setErrorText("Rolul utilizatorului nu este recunoscut.");
+                    setShowErrorModal(true);
+                }
+            }
         } catch (error) {
             if (error.response) {
                 const msg = error.response.data.message;
@@ -61,15 +58,21 @@ const Login = () => {
 
     return (
         <div className={styles.page}>
+
+            {/* Buton înapoi — pozitionat absolut sus stanga */}
+            <button className={styles.backBtn} onClick={() => navigator('/')}>
+                ← Înapoi
+            </button>
+
             <div className={styles.card}>
                 <div className={styles["card-container"]}>
                     <div className={styles.brandMark}>
                         <span className={styles.brandDot}></span>
                         <span className={styles.brandName}>
-                            Dent<span className={styles.brandAccent}>help</span>
+                            Smart<span className={styles.brandAccent}>Care</span>
                         </span>
                     </div>
-                    <p className={styles.helloMsg}>Bine ați revenit</p>
+                    <p className={styles.helloMsg}>Bine ai venit!</p>
                     <form className={styles.loginForm} onSubmit={handleSubmit}>
                         <input
                             placeholder="CNP"
