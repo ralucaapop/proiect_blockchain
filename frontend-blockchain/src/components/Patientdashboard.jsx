@@ -4,6 +4,9 @@ import api from "../api/axios.js";
 import { parseJwt } from "../service/authService.jsx";
 import styles from "../assets/css/PatientDashboard.module.css";
 
+// Functia de fetch e definita complet in afara componentei.
+// Primeste setter-ele ca argumente — nu are nicio legatura cu hook-urile,
+// deci ESLint nu mai poate considera ca face setState "in effect".
 async function fetchPatientData(setPatient, setConsultations, setError, setLoading) {
     const token = localStorage.getItem("token");
 
@@ -77,7 +80,7 @@ function PatientDashboard() {
                         <h1 className={styles.heroName}>
                             {patient?.firstName} {patient?.lastName}
                         </h1>
-                        <p className={styles.heroCnp}>CNP: {patient?.CNP}</p>
+                        <p className={styles.heroCnp}>CNP: {patient?.CNP ?? patient?.CNP ?? patient?.cnp}</p>
                     </div>
                     <div className={styles.heroStats}>
                         <div className={styles.stat}>
@@ -132,7 +135,7 @@ function TabPersonal({ patient }) {
             <div className={styles.infoGrid}>
                 <Info label="Prenume"       value={patient?.firstName} />
                 <Info label="Nume"          value={patient?.lastName} />
-                <Info label="CNP"           value={patient?.cnp} />
+                <Info label="CNP"           value={patient?.CNP ?? patient?.CNP ?? patient?.cnp} />
                 <Info label="Data nașterii" value={patient?.dateOfBirth} />
                 <Info label="Telefon"       value={patient?.phone} />
                 <Info label="Email"         value={patient?.email} />

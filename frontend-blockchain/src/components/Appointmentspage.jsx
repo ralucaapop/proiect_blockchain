@@ -1,115 +1,90 @@
-import {useEffect, useState} from "react";
+import { useState, useEffect } from "react";
 import NavBar from "./NavBar.jsx";
+import api from "../api/axios.js";
 import styles from "../assets/css/AppointmentsPage.module.css";
-import axios from "axios";
 
-// ─── MOCK DATA ────────────────────────────────────────────────────────────────
-// TODO: replace with api.get("/api/consult/date", { data: { startTime, endTime } })
-const MOCK_CONSULTATIONS = [
-    {
-        cnp: "1870312123456",
-        data: "2025-05-28",
-        diagnostic: "Carie interproximală 15",
-        simptome: "Durere la rece, sensibilitate crescută",
-        tratament: "Obtурație compozit clasa II-a",
-        alteDetalii: "Radiografie periapicală — fără modificări periapicale",
-    },
-    {
-        cnp: "1870312123456",
-        data: "2025-01-10",
-        diagnostic: "Control periodic",
-        simptome: "Control de rutină, fără acuze",
-        tratament: "Detartraj supragingival, periaj profesional",
-        alteDetalii: "",
-    },
-    {
-        cnp: "1650814987654",
-        data: "2024-12-03",
-        diagnostic: "Extracție M1 inferior stânga",
-        simptome: "Durere spontană, mobilitate grad III",
-        tratament: "Extracție sub anestezie locală, sutură",
-        alteDetalii: "",
-    },
-    {
-        cnp: "1650814987654",
-        data: "2024-09-15",
-        diagnostic: "Pulpită acută ireversibilă 36",
-        simptome: "Durere pulsatilă spontană, accentuată nocturn",
-        tratament: "Tratament endodontic — biopulpectomie",
-        alteDetalii: "3 canale, obturație provizorie Cavit",
-    },
-];
-
-// TODO: replace with api.get("/api/patients")
-const MOCK_PATIENTS = [
-    { cnp: "1870312123456", firstName: "Maria",  lastName: "Popescu" },
-    { cnp: "1650814987654", firstName: "Ion",    lastName: "Gheorghe" },
-    { cnp: "2780920321321", firstName: "Elena",  lastName: "Stancu" },
-];
-// ─────────────────────────────────────────────────────────────────────────────
+// Ruta: /doctor/consultatii
+//
+// Fara filtru = incarca toate consultarile (perioada larga din backend)
+// Cu filtru = incarca doar din intervalul selectat
+//
+// NOTA: Backend-ul tau are GET /api/consult/date cu body { startTime, endTime }
+// Unele browsere nu suporta body la GET. Daca dai eroare 400/500,
+// schimba in backend @GetMapping in @PostMapping pentru acea ruta.
 
 function AppointmentsPage() {
     const [consultations, setConsultations] = useState([]);
-    const [patients, setPatients]                        = useState([]);
+    const [patients, setPatients]           = useState([]);
+    const [loading, setLoading]             = useState(true);
     const [toast, setToast]                 = useState({ msg: "", type: "" });
     const [startDate, setStartDate]         = useState("");
     const [endDate, setEndDate]             = useState("");
     const [showModal, setShowModal]         = useState(false);
 
-    const getAllPatients = async () =>{
-        try {
-            const token = localStorage.getItem('token');
-
-            const response = await axios.get(`http://localhost:8080/api/patients`,{ headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            console.log("Patients:", response.data.data);
-            setPatients(response.data.data);
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        }
-    };
-    const getAllAppointments = async () =>{
-        try {
-            const token = localStorage.getItem('token');
-
-            const response = await axios.post('http://localhost:8080/api/consult/date', {
-                startTime: "2026-04-29T07:00:00",
-                endTime: "2026-04-29T11:00:00"
-            });
-            console.log("consults:", response.data.data);
-            setConsultations(response.data.data);
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        }
-    };
-
     useEffect(() => {
-        getAllPatients();
-        getAllAppointments();
+        loadAll();
+        loadPatients();
     }, []);
 
-    function showToast(msg, type = "success") {
-        setToast({ msg, type });
-        setTimeout(() => setToast({ msg: "", type: "" }), 3000);
+    // Incarca toate consultarile — perioada foarte larga ca sa le prinda pe toate
+    async function loadAll() {
+        setLoading(true);
+        try {
+            const res = await api.get("/api/consult/date", {
+                data: {
+                    startTime: "2000-01-01T00:00:00",
+                    endTime:   "2099-12-31T23:59:59",
+                },
+            });
+            setConsultations(res.data.data || []);
+        } catch {
+            showToast("Nu s-au putut încărca consultațiile.", "error");
+        } finally {
+            setLoading(false);
+        }
     }
 
-    // Filtru client-side pe data — cand vine din backend se inlocuieste cu request
-    // TODO: replace with api.get("/api/consult/date", { data: { startTime, endTime } })
-    function applyFilter() {
-        if (!startDate || !endDate) { showToast("Selectează ambele date.", "error"); return; }
-        const filtered = consultations.filter(c => {
-            if (!c.data) return false;
-            return c.data >= startDate && c.data <= endDate;
-        });
-        setConsultations(filtered);
+    async function loadPatients() {
+        try {
+            const res = await api.get("/api/patients");
+            setPatients(res.data.data || []);
+        } catch {
+            // lista de pacienti e folosita doar pentru dropdown-ul din modal
+            // eroarea nu e critica
+        }
+    }
+
+    // Filtru pe perioada — valorile vin din input-urile de date ale utilizatorului
+    async function applyFilter() {
+        if (!startDate || !endDate) {
+            showToast("Selectează ambele date pentru filtrare.", "error");
+            return;
+        }
+        setLoading(true);
+        try {
+            const res = await api.get("/api/consult/date", {
+                data: {
+                    startTime: `${startDate}T00:00:00`,
+                    endTime:   `${endDate}T23:59:59`,
+                },
+            });
+            setConsultations(res.data.data || []);
+        } catch {
+            showToast("Eroare la filtrare.", "error");
+        } finally {
+            setLoading(false);
+        }
     }
 
     function resetFilter() {
         setStartDate("");
         setEndDate("");
-        getAllAppointments();
+        loadAll();
+    }
+
+    function showToast(msg, type = "success") {
+        setToast({ msg, type });
+        setTimeout(() => setToast({ msg: "", type: "" }), 3000);
     }
 
     return (
@@ -120,7 +95,9 @@ function AppointmentsPage() {
                 <div className={styles.pageHeader}>
                     <div>
                         <h1 className={styles.pageTitle}>Consultații</h1>
-                        <p className={styles.pageSub}>{consultations.length} înregistrări</p>
+                        <p className={styles.pageSub}>
+                            {loading ? "Se încarcă…" : `${consultations.length} înregistrări`}
+                        </p>
                     </div>
                     <button className={styles.btnPrimary} onClick={() => setShowModal(true)}>
                         + Consultație nouă
@@ -133,28 +110,45 @@ function AppointmentsPage() {
                     </div>
                 )}
 
+                {/* Filtru perioada — valorile sunt complet controlate de utilizator */}
                 <div className={styles.filterBar}>
                     <div className={styles.filterGroup}>
                         <label>De la</label>
-                        <input type="date" value={startDate}
-                               onChange={e => setStartDate(e.target.value)} className={styles.dateInput} />
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={e => setStartDate(e.target.value)}
+                            className={styles.dateInput}
+                        />
                     </div>
                     <div className={styles.filterGroup}>
                         <label>Până la</label>
-                        <input type="date" value={endDate}
-                               onChange={e => setEndDate(e.target.value)} className={styles.dateInput} />
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={e => setEndDate(e.target.value)}
+                            className={styles.dateInput}
+                        />
                     </div>
-                    <button className={styles.btnFilter} onClick={applyFilter}>Filtrează</button>
+                    <button className={styles.btnFilter} onClick={applyFilter}>
+                        Filtrează
+                    </button>
                     {(startDate || endDate) && (
-                        <button className={styles.btnReset} onClick={resetFilter}>✕ Resetează</button>
+                        <button className={styles.btnReset} onClick={resetFilter}>
+                            ✕ Resetează
+                        </button>
                     )}
                 </div>
 
-                {consultations.length === 0 && (
-                    <div className={styles.empty}>Nicio consultație în perioada selectată.</div>
+                {loading && <div className={styles.loading}>Se încarcă…</div>}
+
+                {!loading && consultations.length === 0 && (
+                    <div className={styles.empty}>
+                        Nicio consultație în perioada selectată.
+                    </div>
                 )}
 
-                {consultations.map((c, i) => (
+                {!loading && consultations.map((c, i) => (
                     <ConsultRow key={i} c={c} />
                 ))}
 
@@ -166,7 +160,8 @@ function AppointmentsPage() {
                     onClose={() => setShowModal(false)}
                     onSuccess={() => {
                         setShowModal(false);
-                        showToast("Consultație adăugată! (mock — nu s-a salvat în backend)");
+                        loadAll();
+                        showToast("Consultație adăugată cu succes!");
                     }}
                 />
             )}
@@ -174,16 +169,16 @@ function AppointmentsPage() {
     );
 }
 
-// ─── Un rand expandabil ───────────────────────────────────────────────────────
+// ─── Un rand expandabil din lista ─────────────────────────────────────────────
 function ConsultRow({ c }) {
     const [open, setOpen] = useState(false);
 
     return (
         <div className={`${styles.row} ${open ? styles.rowOpen : ""}`}>
             <div className={styles.rowTop} onClick={() => setOpen(!open)}>
-                <span className={styles.rowDate}>{c.data ?? "—"}</span>
+                <span className={styles.rowDate}>{c.data ?? c.date ?? "—"}</span>
                 <span className={styles.rowDiag}>{c.diagnostic ?? "—"}</span>
-                <span className={styles.rowCnp}>CNP: {c.cnp ?? "—"}</span>
+                <span className={styles.rowCnp}>CNP: {c.CNP ?? c.cnp ?? "—"}</span>
                 <span className={styles.rowToggle}>{open ? "▲" : "▼"}</span>
             </div>
             {open && (
@@ -209,18 +204,26 @@ function ConsultRow({ c }) {
 }
 
 // ─── Modal adaugare consultatie ───────────────────────────────────────────────
-// TODO: submit → api.post("/api/consult/add", form)
+// POST /api/consult/add → { cnp, simptome, diagnostic, tratament, alteDetalii }
 function ModalAddConsult({ patients, onClose, onSuccess }) {
-    const [form, setForm] = useState({
-        cnp: "", simptome: "", diagnostic: "", tratament: "", alteDetalii: ""
-    });
+    const [form, setForm]       = useState({ cnp: "", simptome: "", diagnostic: "", tratament: "", alteDetalii: "" });
+    const [loading, setLoading] = useState(false);
+    const [err, setErr]         = useState("");
 
     const ch = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-    function submit(e) {
+    async function submit(e) {
         e.preventDefault();
-        // TODO: await api.post("/api/consult/add", form)
-        onSuccess();
+        setLoading(true);
+        setErr("");
+        try {
+            await api.post("/api/consult/add", form);
+            onSuccess();
+        } catch {
+            setErr("Eroare la salvare. Încearcă din nou.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -230,14 +233,15 @@ function ModalAddConsult({ patients, onClose, onSuccess }) {
                     <h2 className={styles.modalTitle}>Consultație nouă</h2>
                     <button className={styles.modalClose} onClick={onClose}>✕</button>
                 </div>
+                {err && <div className={styles.toastError} style={{ marginBottom: 14 }}>{err}</div>}
                 <form onSubmit={submit} className={styles.form}>
                     <div className={styles.field}>
                         <label>Pacient *</label>
                         <select name="cnp" value={form.cnp} onChange={ch} required>
                             <option value="">Selectează pacientul…</option>
                             {patients.map(p => (
-                                <option key={p.cnp} value={p.cnp}>
-                                    {p.firstName} {p.lastName} — {p.cnp}
+                                <option key={p.CNP ?? p.cnp} value={p.CNP ?? p.cnp}>
+                                    {p.firstName} {p.lastName} — {p.CNP ?? p.cnp}
                                 </option>
                             ))}
                         </select>
@@ -259,8 +263,12 @@ function ModalAddConsult({ patients, onClose, onSuccess }) {
                         <textarea name="alteDetalii" value={form.alteDetalii} onChange={ch} rows={2} />
                     </div>
                     <div className={styles.formActions}>
-                        <button type="submit"  className={styles.btnPrimary}>Salvează</button>
-                        <button type="button"  className={styles.btnSecondary} onClick={onClose}>Anulează</button>
+                        <button type="submit" className={styles.btnPrimary} disabled={loading}>
+                            {loading ? "Se salvează…" : "Salvează"}
+                        </button>
+                        <button type="button" className={styles.btnSecondary} onClick={onClose}>
+                            Anulează
+                        </button>
                     </div>
                 </form>
             </div>
