@@ -30,7 +30,6 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/consult/add/**").permitAll()
                         .requestMatchers("/api/consult/date/**").permitAll()
-                        .requestMatchers("/api/consult/date/**").permitAll()
                         .requestMatchers("/api/consult/patient_date/**").permitAll()
                         .requestMatchers("/api/consult/patient/**").permitAll()
                         .requestMatchers("/api/patients/**").permitAll()

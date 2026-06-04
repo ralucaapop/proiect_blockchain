@@ -62,11 +62,9 @@ function AppointmentsPage() {
         }
         setLoading(true);
         try {
-            const res = await api.get("/api/consult/date", {
-                data: {
-                    startTime: `${startDate}T00:00:00`,
-                    endTime:   `${endDate}T23:59:59`,
-                },
+            const res = await api.post("/api/consult/date", {
+                startTime: `${startDate}T00:00:00`,
+                endTime: `${endDate}T23:59:59`,
             });
             setConsultations(res.data.data || []);
         } catch {
@@ -176,7 +174,7 @@ function ConsultRow({ c }) {
     return (
         <div className={`${styles.row} ${open ? styles.rowOpen : ""}`}>
             <div className={styles.rowTop} onClick={() => setOpen(!open)}>
-                <span className={styles.rowDate}>{c.data ?? c.date ?? "—"}</span>
+                <span className={styles.rowDate}>{c.dataConsultatie ?? c.dataConsultatie ?? "—"}</span>
                 <span className={styles.rowDiag}>{c.diagnostic ?? "—"}</span>
                 <span className={styles.rowCnp}>CNP: {c.CNP ?? c.cnp ?? "—"}</span>
                 <span className={styles.rowToggle}>{open ? "▲" : "▼"}</span>

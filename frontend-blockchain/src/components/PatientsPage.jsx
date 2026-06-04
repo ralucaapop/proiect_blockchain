@@ -459,7 +459,7 @@ function ConsultCard({ c }) {
     return (
         <div className={styles.consultCard}>
             <div className={styles.consultTop}>
-                <span className={styles.consultDate}>{c.data ?? c.date ?? "—"}</span>
+                <span className={styles.consultDate}>{c.dataConsultatie ?? c.dataConsultatie ?? "—"}</span>
                 <span className={styles.consultDiag}>{c.diagnostic ?? "—"}</span>
             </div>
             <div className={styles.consultGrid}>

@@ -27,7 +27,6 @@ public class ConsultatieController {
     }
 
     @PostMapping("/consult/add")
-    @PreAuthorize("hasAnyAuthority('DOCTOR')")
     public ResponseEntity<ApiResponse> createNewConsult(@RequestBody ConsultatieDto dto) {
         consultatieService.addConsultatie(dto);
         return ResponseEntity.ok(ApiResponse.success("New consult Created", null));
@@ -40,7 +39,6 @@ public class ConsultatieController {
     }
 
     @PostMapping("/consult/date")
-    @PreAuthorize("hasAnyAuthority('DOCTOR')")
     public ResponseEntity<ApiResponse> getConsults(@RequestBody ConsultatiiTimePeriodDto consultatiiTimePeriodDto) {
         List<Consultatie> consultatii = consultatieService.getConsultatiiByPeriod(consultatiiTimePeriodDto.getStartTime(), consultatiiTimePeriodDto.getEndTime());
         return ResponseEntity.ok(ApiResponse.success("Consultatiile din anumite perioade", consultatii));
